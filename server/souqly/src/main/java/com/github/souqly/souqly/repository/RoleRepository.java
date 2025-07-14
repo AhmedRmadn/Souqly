@@ -11,6 +11,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.github.souqly.souqly.Exception.FetchDatabaseException;
 import com.github.souqly.souqly.model.Role;
 import com.github.souqly.souqly.model.RoleName;
 import com.github.souqly.souqly.repository.rowmapper.RoleRowMapper;
@@ -54,9 +55,9 @@ public class RoleRepository {
 			Role role = jdbcTemplate.queryForObject(query, new RoleRowMapper(), roleId);
 			return role;
 		} catch (EmptyResultDataAccessException ex) {
-			return null;
+			throw new FetchDatabaseException("Database error while fetching role with ID: " + roleId);
 		} catch (DataAccessException ex) {
-			throw new RuntimeException("Database error while fetching role with ID: " + roleId, ex);
+			throw new FetchDatabaseException("Database error while fetching role with ID: " + roleId);
 		}
 	}
 

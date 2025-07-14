@@ -38,3 +38,16 @@ CREATE TABLE user_role (
 -- Index for performance
 CREATE INDEX idx_user_role_user_id ON user_role(user_id);
 
+
+CREATE TABLE categories (
+    category_id CHAR(36) PRIMARY KEY,
+    category_name VARCHAR(50) NOT NULL UNIQUE,
+    category_details TEXT NOT NULL,
+    created_at DATETIME NOT NULL,
+    updated_at DATETIME NOT NULL,
+    
+    -- Constraints
+    CHECK (CHAR_LENGTH(category_name) >= 3 AND CHAR_LENGTH(category_name) <= 50),
+    CHECK (CHAR_LENGTH(category_details) >= 5 AND CHAR_LENGTH(category_details) <= 255)
+);
+

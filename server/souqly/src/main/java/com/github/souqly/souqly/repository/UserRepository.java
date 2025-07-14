@@ -6,7 +6,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import com.github.souqly.souqly.Exception.InsertionDatabaseException;
+import com.github.souqly.souqly.Exception.InsertDatabaseException;
 import com.github.souqly.souqly.model.User;
 import com.github.souqly.souqly.repository.rowmapper.UserRowMapper;
 
@@ -39,7 +39,7 @@ public class UserRepository {
 		if (rows == 1) {
 			return user;
 		} else {
-			throw new InsertionDatabaseException("User");
+			throw new InsertDatabaseException("User");
 		}
 	}
 
