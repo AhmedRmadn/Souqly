@@ -85,13 +85,13 @@ public class ProductRepository {
 
 		String query = """
 					INSERT INTO products (
-						product_id, product_name, image_url, product_details,
+						product_id, product_name, product_details,
 						quantity, price, discount, special_price,
 						category_id, seller_id, created_at, updated_at
-					) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+					) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 				""";
 
-		int row = jdbcTemplate.update(query, product.getProductId(), product.getProductName(), product.getImageUrl(),
+		int row = jdbcTemplate.update(query, product.getProductId(), product.getProductName(),
 				product.getProductDetails(), product.getQuantity(), product.getPrice(), product.getDiscount(),
 				product.getSpecialPrice(), product.getCategoryId(), product.getSellerId(), product.getCreatedAt(),
 				product.getUpdatedAt());
@@ -131,7 +131,6 @@ public class ProductRepository {
 		String query = """
 				UPDATE products
 				SET product_name = ?,
-				    image_url = ?,
 				    product_details = ?,
 				    quantity = ?,
 				    price = ?,
@@ -144,7 +143,7 @@ public class ProductRepository {
 
 		product.setUpdatedAt(LocalDateTime.now());
 
-		int rows = jdbcTemplate.update(query, product.getProductName(), product.getImageUrl(),
+		int rows = jdbcTemplate.update(query, product.getProductName(),
 				product.getProductDetails(), product.getQuantity(), product.getPrice(), product.getDiscount(),
 				product.getSpecialPrice(), product.getCategoryId(), product.getUpdatedAt(), product.getProductId());
 

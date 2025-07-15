@@ -11,9 +11,6 @@ public class UpdateProductRequest {
 	@Size(max = 100, message = "Product name must be at most 100 characters")
 	private String productName;
 
-	@Size(max = 255, message = "Image URL must be at most 255 characters")
-	private String imageUrl;
-
 	@NotBlank(message = "Product details are required")
 	private String productDetails;
 
@@ -36,14 +33,6 @@ public class UpdateProductRequest {
 
 	public void setProductName(String productName) {
 		this.productName = productName;
-	}
-
-	public String getImageUrl() {
-		return imageUrl;
-	}
-
-	public void setImageUrl(String imageUrl) {
-		this.imageUrl = imageUrl;
 	}
 
 	public String getProductDetails() {

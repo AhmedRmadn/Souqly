@@ -64,7 +64,6 @@ public class ProdcutService {
 		Product product = new Product();
 
 		product.setProductName(createProductRequest.getProductName());
-		product.setImageUrl(createProductRequest.getImageUrl());
 		product.setProductDetails(createProductRequest.getProductDetails());
 		product.setQuantity(createProductRequest.getQuantity());
 		product.setPrice(createProductRequest.getPrice());
@@ -107,7 +106,6 @@ public class ProdcutService {
 		Product product = new Product();
 		product.setProductId(productId);
 		product.setProductName(updateProductRequest.getProductName());
-		product.setImageUrl(updateProductRequest.getImageUrl());
 		product.setProductDetails(updateProductRequest.getProductDetails());
 		product.setQuantity(updateProductRequest.getQuantity());
 		product.setPrice(updateProductRequest.getPrice());
