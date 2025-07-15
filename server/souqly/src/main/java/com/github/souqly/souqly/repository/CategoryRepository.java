@@ -23,7 +23,7 @@ public class CategoryRepository {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
-	private String generateUUIDForUser() {
+	private String generateUUIDForCategory() {
 		return UUID.randomUUID().toString();
 	}
 
@@ -32,7 +32,7 @@ public class CategoryRepository {
 				    INSERT INTO categories (category_id, category_name, category_details, created_at, updated_at)
 				    VALUES (?, ?, ?, ?, ?)
 				""";
-		String categoryId = generateUUIDForUser();
+		String categoryId = generateUUIDForCategory();
 		category.setCategoryId(categoryId);
 		category.setCreatedAt(LocalDateTime.now());
 		category.setUpdatedAt(LocalDateTime.now());
@@ -41,7 +41,7 @@ public class CategoryRepository {
 		if (rows == 1) {
 			return category;
 		} else {
-			throw new InsertDatabaseException("Cateogry");
+			throw new InsertDatabaseException("failed to inseret into table categories");
 		}
 
 	}

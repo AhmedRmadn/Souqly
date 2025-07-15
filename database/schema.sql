@@ -51,3 +51,23 @@ CREATE TABLE categories (
     CHECK (CHAR_LENGTH(category_details) >= 5 AND CHAR_LENGTH(category_details) <= 255)
 );
 
+CREATE TABLE products (
+    product_id VARCHAR(36) PRIMARY KEY,
+    product_name VARCHAR(100) NOT NULL,
+    image_url VARCHAR(255),
+    product_details TEXT NOT NULL,
+    quantity INT NOT NULL CHECK (quantity >= 0),
+    price DOUBLE NOT NULL CHECK (price >= 0),
+    discount DOUBLE DEFAULT 0 CHECK (discount >= 0 AND discount <= 100),
+    special_price DOUBLE NOT NULL,
+    category_id VARCHAR(36) NOT NULL,
+    seller_id CHAR(36) NOT NULL,
+    created_at DATETIME NOT NULL,
+    updated_at DATETIME NOT NULL,
+	CONSTRAINT fk_product_category
+        FOREIGN KEY (category_id) REFERENCES categories(category_id),
+	CONSTRAINT fk_product_seller
+        FOREIGN KEY (seller_id) REFERENCES users(user_id)
+);
+
+

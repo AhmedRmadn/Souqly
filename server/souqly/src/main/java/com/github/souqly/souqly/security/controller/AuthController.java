@@ -1,4 +1,4 @@
-package com.github.souqly.souqly.security.service.controller;
+package com.github.souqly.souqly.security.controller;
 
 import com.github.souqly.souqly.model.Role;
 import com.github.souqly.souqly.model.RoleName;

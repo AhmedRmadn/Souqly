@@ -22,9 +22,12 @@ public class CategoryService {
 	@Autowired
 	CategoryRepository categoryRepository;
 
+	@Autowired
+	Mapper mapper;
+	
 	public AllRecordsResponse<CategoryResponse> getAllGetegoeries() {
 		List<Category> categories = categoryRepository.getAllGategories();
-		List<CategoryResponse> responseList = categories.stream().map(this::mapCategoryToCategoryResponse).toList();
+		List<CategoryResponse> responseList = categories.stream().map(mapper::mapCategoryToCategoryResponse).toList();
 		AllRecordsResponse<CategoryResponse> data = new AllRecordsResponse<>();
 		data.setContent(responseList);
 		data.setTotalElements(responseList.size());
@@ -32,15 +35,7 @@ public class CategoryService {
 		return data;
 	}
 
-	private CategoryResponse mapCategoryToCategoryResponse(Category category) {
-		CategoryResponse response = new CategoryResponse();
-		response.setCategoryId(category.getCategoryId());
-		response.setCategoryName(category.getCategoryName());
-		response.setCategoryDetails(category.getCategoryDetails());
-		response.setCreatedAt(category.getCreatedAt());
-		response.setUpdatedAt(category.getUpdatedAt());
-		return response;
-	}
+
 
 	public PagedResponse<CategoryResponse> getCategoryPage(PageCategoryRequest pageCategoryRequest) {
 		int size = pageCategoryRequest.getPageSize();
@@ -49,7 +44,7 @@ public class CategoryService {
 		List<Category> categories = categoryRepository.findPageCategories(offset, size, pageCategoryRequest.getSortBy(),
 				pageCategoryRequest.getSortOrder());
 		long total = categoryRepository.countCategories();
-		List<CategoryResponse> responseList = categories.stream().map(this::mapCategoryToCategoryResponse).toList();
+		List<CategoryResponse> responseList = categories.stream().map(mapper::mapCategoryToCategoryResponse).toList();
 		PagedResponse<CategoryResponse> pagedResponse = new PagedResponse<>(responseList, page, size, total);
 		return pagedResponse;
 	}
@@ -59,7 +54,7 @@ public class CategoryService {
 		category.setCategoryName(createCategoryRequest.getCategoryName());
 		category.setCategoryDetails(createCategoryRequest.getCategoryDetails());
 		category = categoryRepository.save(category);
-		return mapCategoryToCategoryResponse(category);
+		return mapper.mapCategoryToCategoryResponse(category);
 	}
 
 	public CategoryResponse updateCategory(UpdateCategoryRequest updateCategoryRequest, String categoryId) {
@@ -69,7 +64,7 @@ public class CategoryService {
 		category.setCategoryId(categoryId);
 		category = categoryRepository.update(category);
 		category = categoryRepository.findById(category.getCategoryId());
-		return mapCategoryToCategoryResponse(category);
+		return mapper.mapCategoryToCategoryResponse(category);
 	}
 
 	public void deleteCategory(String categoryId) {
@@ -78,7 +73,7 @@ public class CategoryService {
 
 	public CategoryResponse getCategoryById(String categoryId) {
 		Category category = categoryRepository.findById(categoryId);
-		return mapCategoryToCategoryResponse(category);
+		return mapper.mapCategoryToCategoryResponse(category);
 	}
 
 }

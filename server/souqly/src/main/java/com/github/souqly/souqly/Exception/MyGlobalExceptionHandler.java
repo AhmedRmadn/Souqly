@@ -7,6 +7,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.github.souqly.souqly.payload.response.ApiResponse;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,6 +24,30 @@ public class MyGlobalExceptionHandler {
 			response.put(fieldName, message);
 		});
 		return new ResponseEntity<Map<String, String>>(response, HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(UnAuthorizedException.class)
+	public ResponseEntity<ApiResponse<Void>> AnAuthException(UnAuthorizedException e) {
+		ApiResponse<Void> response = new ApiResponse<Void>();
+		response.setSuccess(false);
+		response.setMessage(e.getMessage());
+		return new ResponseEntity<ApiResponse<Void>>(response, HttpStatus.UNAUTHORIZED);
+	}
+
+	@ExceptionHandler(ResourceNotFoundException.class)
+	public ResponseEntity<ApiResponse<Void>> myResourceNotFoundException(ResourceNotFoundException e) {
+		ApiResponse<Void> response = new ApiResponse<>();
+		response.setMessage(e.getMessage());
+		response.setSuccess(false);
+		return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+	}
+
+	@ExceptionHandler(DatabaseException.class)
+	public ResponseEntity<ApiResponse<Void>> handleDatabaseException(DatabaseException e) {
+		ApiResponse<Void> response = new ApiResponse<>();
+		response.setMessage(e.getMessage());
+		response.setSuccess(false);
+		return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 //	@ExceptionHandler(ResourceNotFoundException.class)
