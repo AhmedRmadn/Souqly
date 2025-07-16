@@ -25,7 +25,7 @@ import com.github.souqly.souqly.payload.response.PagedResponse;
 import com.github.souqly.souqly.payload.response.ProductResponse;
 import com.github.souqly.souqly.security.service.ActiveUser;
 import com.github.souqly.souqly.security.service.UserDetailsImpl;
-import com.github.souqly.souqly.service.ProdcutService;
+import com.github.souqly.souqly.service.ProductService;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
@@ -36,7 +36,7 @@ import jakarta.validation.constraints.Pattern;
 public class ProductController {
 
 	@Autowired
-	ProdcutService prodcutService;
+	ProductService prodcutService;
 
 	@Autowired
 	ActiveUser activeUser;

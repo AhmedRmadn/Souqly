@@ -70,4 +70,37 @@ CREATE TABLE products (
         FOREIGN KEY (seller_id) REFERENCES users(user_id)
 );
 
+-- Table: carts
+CREATE TABLE carts (
+    cart_id CHAR(36) PRIMARY KEY,
+    customer_id CHAR(36) NOT NULL,
+    cart_state ENUM('ACTIVE', 'CHECKED_OUT', 'ABANDONED') NOT NULL,
+    created_at DATETIME NOT NULL,
+    updated_at DATETIME NOT NULL,
+
+    CONSTRAINT fk_customer
+        FOREIGN KEY (customer_id) REFERENCES users(user_id)
+);
+
+CREATE TABLE cart_items (
+    cart_item_id CHAR(36) PRIMARY KEY,
+    price_at_addition DOUBLE NOT NULL,
+    discount_at_addition DOUBLE NOT NULL,
+    special_price_at_addition DOUBLE NOT NULL, -- 🆕 new column
+    quantity INT NOT NULL,
+    cart_id CHAR(36) NOT NULL,
+    product_id CHAR(36) NOT NULL,
+    created_at DATETIME NOT NULL,
+    updated_at DATETIME NOT NULL,
+
+    CONSTRAINT fk_cart
+        FOREIGN KEY (cart_id) REFERENCES carts(cart_id),
+    CONSTRAINT fk_product
+        FOREIGN KEY (product_id) REFERENCES products(product_id),
+    CONSTRAINT uq_cart_product UNIQUE (cart_id, product_id)
+);
+
+
+
+
 

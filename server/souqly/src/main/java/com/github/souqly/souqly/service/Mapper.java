@@ -1,12 +1,18 @@
 package com.github.souqly.souqly.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.stereotype.Component;
 
+import com.github.souqly.souqly.model.Cart;
+import com.github.souqly.souqly.model.CartItem;
+import com.github.souqly.souqly.model.CartState;
 import com.github.souqly.souqly.model.Category;
 import com.github.souqly.souqly.model.Product;
 import com.github.souqly.souqly.model.User;
+import com.github.souqly.souqly.payload.response.CartItemResponse;
+import com.github.souqly.souqly.payload.response.CartResponse;
 import com.github.souqly.souqly.payload.response.CategoryResponse;
 import com.github.souqly.souqly.payload.response.ProductResponse;
 import com.github.souqly.souqly.payload.response.UserResponse;
@@ -27,6 +33,8 @@ public class Mapper {
 	}
 
 	public ProductResponse mapProductToProductResponse(Product product) {
+		if (product == null)
+			return null;
 		ProductResponse productResponse = new ProductResponse();
 
 		// Map category to category response
@@ -34,7 +42,7 @@ public class Mapper {
 		productResponse.setProductCategory(categoryResponse);
 
 		// Map user to user response
-		UserResponse userResponse = mapProductToProductResponse(product.getProductSeller());
+		UserResponse userResponse = mapUserToUserResponse(product.getProductSeller());
 		productResponse.setProductSeller(userResponse);
 
 		// Map product fields
@@ -54,7 +62,7 @@ public class Mapper {
 		return productResponse;
 	}
 
-	public UserResponse mapProductToProductResponse(User user) {
+	public UserResponse mapUserToUserResponse(User user) {
 		if (user == null)
 			return null;
 		UserResponse userResponse = new UserResponse();
@@ -68,4 +76,50 @@ public class Mapper {
 		return userResponse;
 	}
 
+	public CartItemResponse mapCartItem(CartItem cartItem, double currentPrice, double currentDiscount,
+			double currentSpecialPrice, boolean availableForRequiredQuantity, boolean priceChangedSinceAdded) {
+		CartItemResponse cartItemResponse = new CartItemResponse();
+		ProductResponse productResponse = mapProductToProductResponse(cartItem.getProduct());
+
+		cartItemResponse.setProductResponse(productResponse);
+		
+		cartItemResponse.setCartItemId(cartItem.getCartItemId());
+		cartItemResponse.setCartId(cartItem.getCartId());
+		cartItemResponse.setProductId(cartItem.getProductId());
+
+		cartItemResponse.setPriceAtAddition(cartItem.getPriceAtAddition());
+		cartItemResponse.setDiscountAtAddition(cartItem.getDiscountAtAddition());
+		cartItemResponse.setSpecialPriceAtAddition(cartItem.getSpecialPriceAtAddition());
+
+		cartItemResponse.setQuantity(cartItem.getQuantity());
+		
+		cartItemResponse.setCurrentPrice(currentPrice);
+		cartItemResponse.setCurrentDiscount(currentDiscount);
+		cartItemResponse.setCurrentSpecialPrice(currentSpecialPrice);
+
+
+		cartItemResponse.setAvailableForRequiredQuantity(availableForRequiredQuantity);
+		cartItemResponse.setPriceChangedSinceAdded(priceChangedSinceAdded);
+
+		cartItemResponse.setCreatedAt(cartItem.getCreatedAt());
+		cartItemResponse.setUpdatedAt(cartItem.getUpdatedAt());
+
+		return cartItemResponse;
+	}
+	public CartResponse mapCartToResponse(Cart cart, List<CartItemResponse> items, long totalItems, double totalPriceAtAddition, double currentTotalPrice) {
+	    CartResponse cartResponse = new CartResponse();
+	    
+	    cartResponse.setCartId(cart.getCartId());
+	    cartResponse.setCustomerId(cart.getCustomerId());
+	    cartResponse.setCartState(cart.getCartState());
+	    cartResponse.setCreatedAt(cart.getCreatedAt());
+	    cartResponse.setUpdatedAt(cart.getUpdatedAt());
+
+	    cartResponse.setItems(items);
+	    cartResponse.setTotalItems(totalItems);
+	    cartResponse.setTotalPriceAtAddition(totalPriceAtAddition);
+	    cartResponse.setCurrentTotalPrice(currentTotalPrice);
+
+	    return cartResponse;
+	}
 }

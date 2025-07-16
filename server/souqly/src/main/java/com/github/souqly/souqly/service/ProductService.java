@@ -22,7 +22,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 
 @Service
-public class ProdcutService {
+public class ProductService {
 
 	@Autowired
 	ProductRepository productRepository;
