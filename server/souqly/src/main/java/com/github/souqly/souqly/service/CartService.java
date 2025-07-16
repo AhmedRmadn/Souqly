@@ -98,7 +98,7 @@ public class CartService {
 		double currentDiscount = cartItem.getProduct().getDiscount();
 		double currentSpecialPrice = cartItem.getProduct().getSpecialPrice();
 		boolean availableForRequiredQuantity = cartItem.getQuantity() <= cartItem.getProduct().getQuantity();
-		boolean priceChangedSinceAdded = cartItem.getPriceAtAddition() != cartItem.getProduct().getSpecialPrice();
+		boolean priceChangedSinceAdded = cartItem.getSpecialPriceAtAddition() != cartItem.getProduct().getSpecialPrice();
 		return mapper.mapCartItem(cartItem, currentPrice, currentDiscount, currentSpecialPrice,
 				availableForRequiredQuantity, priceChangedSinceAdded);
 	}
