@@ -5,12 +5,14 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
+import com.github.souqly.souqly.model.Address;
 import com.github.souqly.souqly.model.Cart;
 import com.github.souqly.souqly.model.CartItem;
 import com.github.souqly.souqly.model.CartState;
 import com.github.souqly.souqly.model.Category;
 import com.github.souqly.souqly.model.Product;
 import com.github.souqly.souqly.model.User;
+import com.github.souqly.souqly.payload.response.AddressResponse;
 import com.github.souqly.souqly.payload.response.CartItemResponse;
 import com.github.souqly.souqly.payload.response.CartResponse;
 import com.github.souqly.souqly.payload.response.CategoryResponse;
@@ -121,5 +123,20 @@ public class Mapper {
 	    cartResponse.setCurrentTotalPrice(currentTotalPrice);
 
 	    return cartResponse;
+	}
+	
+	public AddressResponse mapAddressToResoponse(Address address) {
+	    AddressResponse addressResponse = new AddressResponse();
+	    addressResponse.setAddressId(address.getAddressId());
+	    addressResponse.setUserId(address.getUserId());
+	    addressResponse.setBuildingName(address.getBuildingName());
+	    addressResponse.setStreet(address.getStreet());
+	    addressResponse.setCity(address.getCity());
+	    addressResponse.setState(address.getState());
+	    addressResponse.setCountry(address.getCountry());
+	    addressResponse.setPincode(address.getPincode());
+	    addressResponse.setCreatedAt(address.getCreatedAt());
+	    addressResponse.setUpdatedAt(address.getUpdatedAt());
+	    return addressResponse;
 	}
 }
