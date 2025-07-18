@@ -100,7 +100,7 @@ CREATE TABLE cart_items (
     CONSTRAINT uq_cart_product UNIQUE (cart_id, product_id)
 );
 
-CREATE TABLE Address (
+CREATE TABLE addresses (
     address_id VARCHAR(36) PRIMARY KEY,
     user_id VARCHAR(36) NOT NULL,
     building_name VARCHAR(255) NOT NULL,
@@ -109,10 +109,58 @@ CREATE TABLE Address (
     state VARCHAR(255) NOT NULL,
     country VARCHAR(255) NOT NULL,
     pincode VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_at TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP NOT NULL,
     FOREIGN KEY (user_id) REFERENCES Users(user_id)
 );
+
+CREATE TABLE orders (
+  order_id CHAR(36) PRIMARY KEY,
+  user_id CHAR(36) NOT NULL,
+  user_email VARCHAR(255) NOT NULL,
+  address TEXT NOT NULL,
+  status ENUM('PENDING', 'CONFIRMED', 'SHIPPED', 'DELIVERED', 'CANCELLED', 'RETURNED') NOT NULL DEFAULT 'PENDING',
+  total_amount double NOT NULL,
+  created_at TIMESTAMP NOT NULL,
+  updated_at TIMESTAMP NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+CREATE TABLE order_items (
+  order_item_id CHAR(36) PRIMARY KEY,
+  order_id CHAR(36) NOT NULL,
+  product_id CHAR(36) NOT NULL,
+  product_name VARCHAR(255) NOT NULL,
+  product_image_url VARCHAR(1024) ,
+  product_details TEXT NOT NULL,
+  quantity INT NOT NULL,
+  price DOUBLE NOT NULL,
+  discount DOUBLE NOT NULL,
+  special_price DOUBLE NOT NULL,
+  seller_id CHAR(36) NOT NULL,
+  seller_email VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP NOT NULL,
+  updated_at TIMESTAMP NOT NULL,
+  FOREIGN KEY (order_id) REFERENCES orders(order_id),
+  FOREIGN KEY (seller_id) REFERENCES users(user_id)
+);
+
+CREATE TABLE payments (
+  payment_id CHAR(36) PRIMARY KEY,
+  order_id CHAR(36) NOT NULL,
+  amount double NOT NULL,
+  payment_state ENUM('PENDING', 'SUCCESS', 'FAILED') NOT NULL,
+  method ENUM('STRIPE', 'CASH', 'PAYPAL', 'CARD') NOT NULL,
+  payment_time TIMESTAMP ,
+  transaction_id VARCHAR(255) NOT NULL unique,
+  created_at TIMESTAMP NOT NULL,
+  updated_at TIMESTAMP NOT NULL,
+  FOREIGN KEY (order_id) REFERENCES orders(order_id)
+);
+
+
+
+
 
 
 

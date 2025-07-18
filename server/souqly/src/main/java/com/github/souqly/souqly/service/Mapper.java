@@ -10,12 +10,17 @@ import com.github.souqly.souqly.model.Cart;
 import com.github.souqly.souqly.model.CartItem;
 import com.github.souqly.souqly.model.CartState;
 import com.github.souqly.souqly.model.Category;
+import com.github.souqly.souqly.model.Order;
+import com.github.souqly.souqly.model.OrderItem;
+import com.github.souqly.souqly.model.OrderStatus;
 import com.github.souqly.souqly.model.Product;
 import com.github.souqly.souqly.model.User;
 import com.github.souqly.souqly.payload.response.AddressResponse;
 import com.github.souqly.souqly.payload.response.CartItemResponse;
 import com.github.souqly.souqly.payload.response.CartResponse;
 import com.github.souqly.souqly.payload.response.CategoryResponse;
+import com.github.souqly.souqly.payload.response.OrderItemResponse;
+import com.github.souqly.souqly.payload.response.OrderResponse;
 import com.github.souqly.souqly.payload.response.ProductResponse;
 import com.github.souqly.souqly.payload.response.UserResponse;
 
@@ -139,4 +144,40 @@ public class Mapper {
 	    addressResponse.setUpdatedAt(address.getUpdatedAt());
 	    return addressResponse;
 	}
+	public OrderItemResponse mapOrderItem(OrderItem item) {
+	    OrderItemResponse orderItemResponse = new OrderItemResponse();
+
+	    orderItemResponse.setOrderItemId(item.getOrderItemId());
+	    orderItemResponse.setOrderId(item.getOrderId());
+	    orderItemResponse.setProductId(item.getProductId());
+	    orderItemResponse.setProductName(item.getProductName());
+	    orderItemResponse.setProductImageUrl(item.getProductImageUrl());
+	    orderItemResponse.setProductDetails(item.getProductDetails());
+	    orderItemResponse.setQuantity(item.getQuantity());
+	    orderItemResponse.setPrice(item.getPrice());
+	    orderItemResponse.setDiscount(item.getDiscount());
+	    orderItemResponse.setSpecialPrice(item.getSpecialPrice());
+	    orderItemResponse.setSellerId(item.getSellerId());
+	    orderItemResponse.setSellerEmail(item.getSellerEmail());
+	    orderItemResponse.setCreatedAt(item.getCreatedAt());
+	    orderItemResponse.setUpdatedAt(item.getUpdatedAt());
+
+	    return orderItemResponse;
+	}
+	public OrderResponse mapOrdertoOrderResponse(Order order, List<OrderItemResponse> orderItemResponses) {
+	    OrderResponse orderResponse = new OrderResponse();
+
+	    orderResponse.setOrderId(order.getOrderId());
+	    orderResponse.setUserId(order.getUserId());
+	    orderResponse.setUserEmail(order.getUserEmail());
+	    orderResponse.setAddress(order.getAddress());
+	    orderResponse.setStatus(order.getStatus());
+	    orderResponse.setTotalAmount(order.getTotalAmount());
+	    orderResponse.setCreatedAt(order.getCreatedAt());
+	    orderResponse.setUpdatedAt(order.getUpdatedAt());
+	    orderResponse.setOrderItemResponses(orderItemResponses);
+
+	    return orderResponse;
+	}
+
 }

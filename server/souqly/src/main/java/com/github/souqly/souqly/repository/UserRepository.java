@@ -6,6 +6,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.github.souqly.souqly.Exception.FetchDatabaseException;
 import com.github.souqly.souqly.Exception.InsertDatabaseException;
 import com.github.souqly.souqly.model.User;
 import com.github.souqly.souqly.repository.rowmapper.UserRowMapper;
@@ -91,6 +92,17 @@ public class UserRepository {
 			throw new RuntimeException("Error fetching user by username: " + userEmail, ex);
 
 		}
+	}
+
+	public String findUserEmail(String userId) {
+		String sql = "SELECT email FROM users WHERE user_id = ?";
+		try {
+			String email = jdbcTemplate.queryForObject(sql, String.class, userId);
+			return email;
+		} catch (DataAccessException e) {
+			throw new FetchDatabaseException("could not fetch user email user id " + userId);
+		}
+
 	}
 
 }

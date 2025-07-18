@@ -9,7 +9,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.github.souqly.souqly.Exception.InsertDatabaseException;
+import com.github.souqly.souqly.Exception.UpdateDatabaseException;
 import com.github.souqly.souqly.model.Cart;
+import com.github.souqly.souqly.model.CartState;
 import com.github.souqly.souqly.repository.rowmapper.CartRowMapper;
 
 @Repository
@@ -34,32 +36,40 @@ public class CartRepository {
 	}
 
 	public Cart createCart(Cart cart) {
-	    String query = """
-	        INSERT INTO carts (
-	            cart_id,
-	            customer_id,
-	            cart_state,
-	            created_at,
-	            updated_at
-	        ) VALUES (?, ?, ?, ?, ?)
-	    """;
+		String query = """
+				    INSERT INTO carts (
+				        cart_id,
+				        customer_id,
+				        cart_state,
+				        created_at,
+				        updated_at
+				    ) VALUES (?, ?, ?, ?, ?)
+				""";
 
-	    cart.setCartId(generateUUIDForCart());
-	    cart.setCreatedAt(LocalDateTime.now());
-	    cart.setUpdatedAt(LocalDateTime.now());
+		cart.setCartId(generateUUIDForCart());
+		cart.setCreatedAt(LocalDateTime.now());
+		cart.setUpdatedAt(LocalDateTime.now());
 
-	    int row = jdbcTemplate.update(
-	        query,
-	        cart.getCartId(),
-	        cart.getCustomerId(),
-	        cart.getCartState().name(), // Assuming enum CartState
-	        cart.getCreatedAt(),
-	        cart.getUpdatedAt()
-	    );
+		int row = jdbcTemplate.update(query, cart.getCartId(), cart.getCustomerId(), cart.getCartState().name(), // Assuming
+																													// enum
+																													// CartState
+				cart.getCreatedAt(), cart.getUpdatedAt());
 		if (row != 1)
 			throw new InsertDatabaseException("failed to inseret into table carts");
 
-	    return cart;
+		return cart;
+	}
+
+	public void updateCartState(CartState cartState, String CartId) {
+		String query = """
+				UPDATE carts SET
+				cart_state = ?
+				WHERE cart_id = ?
+				""";
+		int row = jdbcTemplate.update(query, cartState.name(), CartId);
+		if (row != 1)
+			throw new UpdateDatabaseException("could not update cart");
+
 	}
 
 }

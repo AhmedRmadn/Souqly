@@ -73,6 +73,13 @@ public class AddressResponse {
 	public void setUpdatedAt(LocalDateTime updatedAt) {
 		this.updatedAt = updatedAt;
 	}
+	@Override
+	public String toString() {
+		return "AddressResponse [buildingName=" + buildingName + ", street=" + street + ", city=" + city + ", state="
+				+ state + ", country=" + country + ", pincode=" + pincode + "]";
+	}
+	
+	
     
     
 

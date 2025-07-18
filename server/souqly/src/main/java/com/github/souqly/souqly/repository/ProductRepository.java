@@ -143,9 +143,9 @@ public class ProductRepository {
 
 		product.setUpdatedAt(LocalDateTime.now());
 
-		int rows = jdbcTemplate.update(query, product.getProductName(),
-				product.getProductDetails(), product.getQuantity(), product.getPrice(), product.getDiscount(),
-				product.getSpecialPrice(), product.getCategoryId(), product.getUpdatedAt(), product.getProductId());
+		int rows = jdbcTemplate.update(query, product.getProductName(), product.getProductDetails(),
+				product.getQuantity(), product.getPrice(), product.getDiscount(), product.getSpecialPrice(),
+				product.getCategoryId(), product.getUpdatedAt(), product.getProductId());
 
 		if (rows == 1) {
 			return product;
@@ -186,6 +186,18 @@ public class ProductRepository {
 		} catch (DataAccessException ex) {
 			throw new FetchDatabaseException("Database error while fetching products with ID: " + productId);
 		}
+	}
+
+	public void reduceProductQuantity(String productId, int reducedQuantity) {
+		String query = """
+			    UPDATE products SET
+			        quantity = quantity - ?,
+			        updated_at = ?
+			    WHERE product_id = ? AND quantity >= ?
+			""";
+		int rows = jdbcTemplate.update(query, reducedQuantity,LocalDateTime.now(),productId,reducedQuantity);
+		if (rows != 1) 
+			throw new UpdateDatabaseException("could not purchase product with id "+productId);
 	}
 
 }

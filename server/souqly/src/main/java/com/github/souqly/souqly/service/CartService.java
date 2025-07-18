@@ -80,6 +80,7 @@ public class CartService {
 		return cartItem;
 
 	}
+	
 
 	private Cart getUserCart(String userId) {
 		Cart cart = cartRepository.findUserActiveCart(userId);
@@ -156,6 +157,9 @@ public class CartService {
 		}
 		cartItem = cartItemRepository.updateQuantity(cartItem);
 		return mapCartItem(cartItem);
+	}
+	public void updateCartState(CartState cartState,String CartId) {
+		cartRepository.updateCartState(cartState,CartId);
 	}
 
 }

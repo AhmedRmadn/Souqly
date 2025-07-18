@@ -146,14 +146,14 @@ public class AuthController {
 		}
 	}
 
-	@GetMapping("/username")
-	public String currentUserName(Authentication authentication) {
-		System.out.println("user name");
-		if (authentication != null)
-			return authentication.getName();
-		else
-			return "";
-	}
+//	@GetMapping("/username")
+//	public String currentUserName(Authentication authentication) {
+//		System.out.println("user name");
+//		if (authentication != null)
+//			return authentication.getName();
+//		else
+//			return "";
+//	}
 
 	@GetMapping("/user")
 	public ResponseEntity<?> getUserDetails(Authentication authentication) {

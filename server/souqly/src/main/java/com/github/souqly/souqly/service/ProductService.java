@@ -127,4 +127,8 @@ public class ProductService {
 		return mapper.mapProductToProductResponse(product);
 	}
 
+	public void reduceProductQuantity(String productId, int quantity) {
+		productRepository.reduceProductQuantity(productId, quantity);
+	}
+
 }
