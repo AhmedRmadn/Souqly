@@ -13,6 +13,7 @@ import com.github.souqly.souqly.Exception.DeleteDatabaseException;
 import com.github.souqly.souqly.Exception.FetchDatabaseException;
 import com.github.souqly.souqly.Exception.InsertDatabaseException;
 import com.github.souqly.souqly.Exception.UpdateDatabaseException;
+import com.github.souqly.souqly.model.Cart;
 import com.github.souqly.souqly.model.CartItem;
 import com.github.souqly.souqly.repository.rowmapper.CartItemRowMapper;
 
@@ -130,6 +131,36 @@ public class CartItemRepository {
 			throw new UpdateDatabaseException(
 					"error while updating quantity for cart item with id " + cartItem.getCartItemId());
 		return cartItem;
+	}
+	
+	public void updateQuantitySafely(String cartItemId, int delta) {
+	    String query = """
+	        UPDATE cart_items AS ci
+	        SET quantity = ci.quantity + ?, updated_at = ?
+	        FROM products p
+	        WHERE ci.cart_item_id = ?
+	          AND ci.product_id = p.product_id
+	          AND (ci.quantity + ?) <= p.quantity
+	          AND (ci.quantity + ?) >= 0
+	    """;
+
+	    int affected = jdbcTemplate.update(query,
+	        delta,
+	        LocalDateTime.now(),
+	        cartItemId,
+	        delta,
+	        delta
+	    );
+
+	    if (affected != 1) {
+	    	throw new UpdateDatabaseException(
+					"error while updating quantity for cart item with id " + cartItemId);
+	    }
+	}
+
+	public Cart getUserCartForCheckOut(String userId) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

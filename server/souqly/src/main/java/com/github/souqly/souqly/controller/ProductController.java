@@ -3,7 +3,6 @@ package com.github.souqly.souqly.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,16 +14,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.souqly.souqly.payload.request.PageProductRequest;
-import com.github.souqly.souqly.payload.request.UpdateCategoryRequest;
 import com.github.souqly.souqly.payload.request.UpdateProductRequest;
 import com.github.souqly.souqly.payload.request.CreateProductRequest;
 import com.github.souqly.souqly.payload.response.AllRecordsResponse;
 import com.github.souqly.souqly.payload.response.ApiResponse;
-import com.github.souqly.souqly.payload.response.CategoryResponse;
 import com.github.souqly.souqly.payload.response.PagedResponse;
 import com.github.souqly.souqly.payload.response.ProductResponse;
 import com.github.souqly.souqly.security.service.ActiveUser;
-import com.github.souqly.souqly.security.service.UserDetailsImpl;
 import com.github.souqly.souqly.service.ProductService;
 
 import jakarta.validation.Valid;

@@ -11,6 +11,8 @@ public class CreateOrderRequest {
         message = "Invalid UUID format for addressId"
     )
     private String addressId;
+    
+    private int num;
 
 	public String getAddressId() {
 		return addressId;
@@ -19,6 +21,16 @@ public class CreateOrderRequest {
 	public void setAddressId(String addressId) {
 		this.addressId = addressId;
 	}
+
+	public int getNum() {
+		return num;
+	}
+
+	public void setNum(int num) {
+		this.num = num;
+	}
+	
+	
     
     
 

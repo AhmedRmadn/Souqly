@@ -1,5 +1,7 @@
 package com.github.souqly.souqly.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,5 +31,9 @@ public class OrderItemService {
 		orderItem.setSellerEmail(dto.getSellerEmail());
 
 		return orderItemRepository.createOrderItem(orderItem);
+	}
+	
+	public List<OrderItem> orderItemsForOrder(String orderId){
+		return orderItemRepository.orderItemsForOrder(orderId);
 	}
 }

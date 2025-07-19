@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.github.souqly.souqly.Exception.ApiException;
@@ -80,7 +81,6 @@ public class CartService {
 		return cartItem;
 
 	}
-	
 
 	private Cart getUserCart(String userId) {
 		Cart cart = cartRepository.findUserActiveCart(userId);
@@ -99,7 +99,8 @@ public class CartService {
 		double currentDiscount = cartItem.getProduct().getDiscount();
 		double currentSpecialPrice = cartItem.getProduct().getSpecialPrice();
 		boolean availableForRequiredQuantity = cartItem.getQuantity() <= cartItem.getProduct().getQuantity();
-		boolean priceChangedSinceAdded = cartItem.getSpecialPriceAtAddition() != cartItem.getProduct().getSpecialPrice();
+		boolean priceChangedSinceAdded = cartItem.getSpecialPriceAtAddition() != cartItem.getProduct()
+				.getSpecialPrice();
 		return mapper.mapCartItem(cartItem, currentPrice, currentDiscount, currentSpecialPrice,
 				availableForRequiredQuantity, priceChangedSinceAdded);
 	}
@@ -137,7 +138,7 @@ public class CartService {
 		cartItemRepository.delete(cartItemId);
 	}
 
-	@Transactional
+	@Transactional(isolation = Isolation.REPEATABLE_READ)
 	public CartItemResponse updateCartItemInCart(UpdateCartItemQuantityRequest updateCartItemQuantityRequest,
 			String cartItemId, String userId) {
 		int delta = updateCartItemQuantityRequest.getDelta();
@@ -155,11 +156,21 @@ public class CartService {
 		} else if (cartItem.getQuantity() > cartItem.getProduct().getPrice()) {
 			throw new ApiException("number of available products less than requied", HttpStatus.BAD_REQUEST);
 		}
-		cartItem = cartItemRepository.updateQuantity(cartItem);
+
+		cartItemRepository.updateQuantitySafely(cartItemId, delta);
+
 		return mapCartItem(cartItem);
 	}
-	public void updateCartState(CartState cartState,String CartId) {
-		cartRepository.updateCartState(cartState,CartId);
+
+	public void updateCartState(CartState newCartState, CartState currentCartState, String CartId) {
+		cartRepository.updateCartState(newCartState,currentCartState, CartId);
+	}
+
+	public CartResponse getUserCartForCheckout(String userId) {
+		Cart userCart = cartRepository.getUserCartForCheckOut(userId);
+		List<CartItem> cartItems = cartItemRepository.getCartItemsInCart(userCart.getCartId());
+		List<CartItemResponse> cartItemResponses = cartItems.stream().map(this::mapCartItem).toList();
+		return mapCartToResponse(userCart, cartItemResponses);
 	}
 
 }

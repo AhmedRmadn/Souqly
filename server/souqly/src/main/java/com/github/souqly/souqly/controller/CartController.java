@@ -18,7 +18,6 @@ import com.github.souqly.souqly.payload.request.UpdateCartItemQuantityRequest;
 import com.github.souqly.souqly.payload.response.ApiResponse;
 import com.github.souqly.souqly.payload.response.CartItemResponse;
 import com.github.souqly.souqly.payload.response.CartResponse;
-import com.github.souqly.souqly.payload.response.ProductResponse;
 import com.github.souqly.souqly.security.service.ActiveUser;
 import com.github.souqly.souqly.service.CartService;
 

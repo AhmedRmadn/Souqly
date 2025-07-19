@@ -6,6 +6,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.github.souqly.souqly.Exception.ApiException;
@@ -58,11 +60,15 @@ public class CheckoutService {
 
 	@Transactional
 	public CheckoutResponse checkout(CreateOrderRequest createOrderRequest, String userId) throws StripeException {
+//		System.out.println("enter "+createOrderRequest.getNum());
 		OrderResponse orderResponse = createOrder(createOrderRequest, userId);
+//		System.out.println("order-end "+createOrderRequest.getNum());
 		String paymentUrl = performPayment(orderResponse, userId);
+		
 		CheckoutResponse checkoutResponse = new CheckoutResponse();
 		checkoutResponse.setOrderResponse(orderResponse);
 		checkoutResponse.setPaymentUrl(paymentUrl);
+//		System.out.println("out "+createOrderRequest.getNum());
 		return checkoutResponse;
 	}
 
@@ -75,8 +81,11 @@ public class CheckoutService {
 		return paymentService.createPayment(paymentDTO);
 	}
 
+
 	private OrderResponse createOrder(CreateOrderRequest createOrderRequest, String userId) {
-		CartResponse cartResponse = cartService.viewUserCart(userId);
+//		System.out.println("order 1 "+createOrderRequest.getNum());
+//		CartResponse cartResponse = cartService.viewUserCart(userId);
+		CartResponse cartResponse = cartService.getUserCartForCheckout(userId);
 		if (cartResponse.getTotalItems() == 0) {
 			throw new ApiException("your cart is Empty", HttpStatus.BAD_REQUEST);
 		}
@@ -84,18 +93,25 @@ public class CheckoutService {
 		Order order = createOrderRecord(userAddress, cartResponse, userId);
 
 		List<OrderItem> orderItems = new ArrayList<>();
-
+//		System.out.println("order 2 "+createOrderRequest.getNum());
 		for (CartItemResponse item : cartResponse.getItems()) {
 			ProductResponse product = item.getProductResponse();
 			if (product.getQuantity() < item.getQuantity()) {
 				throw new ApiException("product out of stock " + product.getProductId(), HttpStatus.BAD_REQUEST);
 			}
-			productService.reduceProductQuantity(product.getProductId(), item.getQuantity());
+			productService.updateProductQuantityForCheckout(product.getProductId(), -item.getQuantity());
 			OrderItem orderItem = createOrderItem(item, order);
 			orderItems.add(orderItem);
 		}
+//		System.out.println("order 3 "+createOrderRequest.getNum());
 		List<OrderItemResponse> orderItemResponses = orderItems.stream().map(mapper::mapOrderItem).toList();
-//		cartService.updateCartState(CartState.CHECKED_OUT, cartResponse.getCartId());
+		cartService.updateCartState(CartState.CHECKED_OUT,CartState.ACTIVE, cartResponse.getCartId());
+		try {
+			Thread.sleep(createOrderRequest.getNum());
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return mapper.mapOrdertoOrderResponse(order, orderItemResponses);
 	}
 
@@ -140,6 +156,10 @@ public class CheckoutService {
 	public void paymentFailed(String transactionId) {
 		Payment payment = paymentService.getPaymentByTransactionId(transactionId);
 		paymentService.updateOrderState(payment.getPaymentId(), PaymentStatus.FAILED);
+		List<OrderItem> orderItems = orderItemService.orderItemsForOrder(payment.getOrderId());
+		for (OrderItem orderItem : orderItems) {
+			productService.updateProductQuantityForCheckout(orderItem.getProductId(), orderItem.getQuantity());
+		}
 		orderService.updateOrderState(payment.getOrderId(), OrderStatus.CANCELLED);
 	}
 

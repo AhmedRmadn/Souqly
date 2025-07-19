@@ -1,10 +1,10 @@
 package com.github.souqly.souqly.service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.github.souqly.souqly.Exception.ResourceNotFoundException;
 import com.github.souqly.souqly.Exception.UnAuthorizedException;
@@ -13,13 +13,10 @@ import com.github.souqly.souqly.payload.request.CreateProductRequest;
 import com.github.souqly.souqly.payload.request.PageProductRequest;
 import com.github.souqly.souqly.payload.request.UpdateProductRequest;
 import com.github.souqly.souqly.payload.response.AllRecordsResponse;
-import com.github.souqly.souqly.payload.response.CategoryResponse;
 import com.github.souqly.souqly.payload.response.PagedResponse;
 import com.github.souqly.souqly.payload.response.ProductResponse;
 import com.github.souqly.souqly.repository.ProductRepository;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Pattern;
 
 @Service
 public class ProductService {
@@ -93,7 +90,7 @@ public class ProductService {
 		productRepository.deleteProduct(productId);
 
 	}
-
+	@Transactional
 	public ProductResponse updateProduct(UpdateProductRequest updateProductRequest, String productId,
 			String activeUserId) {
 		String productSeller = productRepository.findProductSeller(productId);
@@ -127,8 +124,8 @@ public class ProductService {
 		return mapper.mapProductToProductResponse(product);
 	}
 
-	public void reduceProductQuantity(String productId, int quantity) {
-		productRepository.reduceProductQuantity(productId, quantity);
+	public void updateProductQuantityForCheckout(String productId, int quantity) {
+		productRepository.updateProductQuantityForCheckout(productId, quantity);
 	}
 
 }

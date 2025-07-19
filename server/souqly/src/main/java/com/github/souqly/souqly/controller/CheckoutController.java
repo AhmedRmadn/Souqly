@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.github.souqly.souqly.payload.request.CreateOrderRequest;
 import com.github.souqly.souqly.payload.response.ApiResponse;
 import com.github.souqly.souqly.payload.response.CheckoutResponse;
-import com.github.souqly.souqly.payload.response.OrderResponse;
 import com.github.souqly.souqly.security.service.ActiveUser;
 import com.github.souqly.souqly.service.CheckoutService;
 import com.stripe.exception.StripeException;

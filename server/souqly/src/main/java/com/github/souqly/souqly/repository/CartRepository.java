@@ -5,9 +5,11 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.github.souqly.souqly.Exception.FetchDatabaseException;
 import com.github.souqly.souqly.Exception.InsertDatabaseException;
 import com.github.souqly.souqly.Exception.UpdateDatabaseException;
 import com.github.souqly.souqly.model.Cart;
@@ -60,16 +62,31 @@ public class CartRepository {
 		return cart;
 	}
 
-	public void updateCartState(CartState cartState, String CartId) {
+	public void updateCartState(CartState cartState, CartState currentCartState, String CartId) {
 		String query = """
 				UPDATE carts SET
 				cart_state = ?
-				WHERE cart_id = ?
+				WHERE cart_id = ? AND cart_state = ?
 				""";
-		int row = jdbcTemplate.update(query, cartState.name(), CartId);
+		int row = jdbcTemplate.update(query, cartState.name(), CartId, currentCartState.name());
 		if (row != 1)
-			throw new UpdateDatabaseException("could not update cart");
+			throw new UpdateDatabaseException("could not update cart state in valid cartState");
 
+	}
+
+	public Cart getUserCartForCheckOut(String userId) {
+		String sql = """
+				    SELECT * FROM carts
+				    WHERE customer_id = ? AND cart_state = 'ACTIVE'
+				    FOR UPDATE
+				""";
+
+		try {
+			Cart cart = jdbcTemplate.queryForObject(sql, new CartRowMapper(), userId);
+			return cart;
+		} catch (DataAccessException e) {
+			throw new FetchDatabaseException("could not find active carts for checkout");
+		}
 	}
 
 }

@@ -1,6 +1,7 @@
 package com.github.souqly.souqly.repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import com.github.souqly.souqly.Exception.InsertDatabaseException;
 import com.github.souqly.souqly.model.OrderItem;
+import com.github.souqly.souqly.repository.rowmapper.OrderItemRowMapper;
 
 @Repository
 public class OrderItemRepository {
@@ -57,4 +59,14 @@ public class OrderItemRepository {
 
 		return orderItem;
 	}
+
+
+	public List<OrderItem> orderItemsForOrder(String orderId) {
+	    String query = """
+	        SELECT * FROM order_items
+	        WHERE order_id = ?
+	    """;
+	    return jdbcTemplate.query(query, new OrderItemRowMapper(), orderId);
+	}
+
 }

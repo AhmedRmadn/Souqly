@@ -2,6 +2,7 @@ package com.github.souqly.souqly.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.github.souqly.souqly.Exception.UnAuthorizedException;
 import com.github.souqly.souqly.model.Address;
@@ -59,6 +60,7 @@ public class AddressService {
 		addressRepository.deleteById(addressId);
 	}
 
+	@Transactional
 	public AddressResponse updateUserAddress(UpdateAddressRequest updateAddressRequest,String addressId, String userId) {
 		// Step 1: Fetch existing address
 		Address address = addressRepository.findById(addressId);

@@ -9,15 +9,13 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.github.souqly.souqly.Exception.DatabaseException;
 import com.github.souqly.souqly.Exception.DeleteDatabaseException;
 import com.github.souqly.souqly.Exception.FetchDatabaseException;
 import com.github.souqly.souqly.Exception.InsertDatabaseException;
 import com.github.souqly.souqly.Exception.UpdateDatabaseException;
-import com.github.souqly.souqly.model.Category;
 import com.github.souqly.souqly.model.Product;
-import com.github.souqly.souqly.repository.rowmapper.CategoryRowMapper;
 import com.github.souqly.souqly.repository.rowmapper.ProductCategoryUserRowMapper;
 import com.github.souqly.souqly.repository.rowmapper.ProductRowMapper;
 
@@ -127,6 +125,7 @@ public class ProductRepository {
 
 	}
 
+	@Transactional
 	public Product updateProduct(Product product) {
 		String query = """
 				UPDATE products
@@ -188,16 +187,28 @@ public class ProductRepository {
 		}
 	}
 
-	public void reduceProductQuantity(String productId, int reducedQuantity) {
+	public void updateProductQuantityForCheckout(String productId, int delta) {
+		String query = """
+				    UPDATE products SET
+				        quantity = quantity + ?,
+				        updated_at = ?
+				    WHERE product_id = ? AND quantity + ? >= 0 
+				""";
+		int rows = jdbcTemplate.update(query, delta, LocalDateTime.now(), productId, delta);
+		if (rows != 1)
+			throw new UpdateDatabaseException("could not purchase product with id " + productId);
+	}
+
+	public void uploadImage(String imageUrl, String productId) {
 		String query = """
 			    UPDATE products SET
-			        quantity = quantity - ?,
+			        image_url = ?,
 			        updated_at = ?
-			    WHERE product_id = ? AND quantity >= ?
+			    WHERE product_id = ?
 			""";
-		int rows = jdbcTemplate.update(query, reducedQuantity,LocalDateTime.now(),productId,reducedQuantity);
-		if (rows != 1) 
-			throw new UpdateDatabaseException("could not purchase product with id "+productId);
+		int rows = jdbcTemplate.update(query, imageUrl, LocalDateTime.now(), productId);
+		if (rows != 1)
+			throw new UpdateDatabaseException("could not upload image product with id " + productId);
 	}
 
 }
