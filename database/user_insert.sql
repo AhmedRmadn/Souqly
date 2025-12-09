@@ -1,3 +1,4 @@
+use souqly;
 -- Insert Roles
 INSERT INTO roles (role_id, role_name, created_at, updated_at) VALUES
 ('r-admin-0000-0000-0000-000000000000', 'ADMIN',    NOW(), NOW()),

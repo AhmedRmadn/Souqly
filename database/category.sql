@@ -1,3 +1,4 @@
+use souqly;
 INSERT INTO categories (category_id, category_name, category_details, created_at, updated_at) VALUES
 ('ede13871-93e9-4c14-8000-6d7e2e7d236c', 'Smartphones and Mobile Devices', 'This category includes a variety of high-quality products suited for different needs, offering both performance and reliability in every aspect.', '2025-07-14 13:44:26', '2025-07-14 13:44:26'),
 ('54c89d41-7584-4804-a153-046ef89969f6', 'Kitchen Appliances and Cookware', 'This category includes a variety of high-quality products suited for different needs, offering both performance and reliability in every aspect.', '2025-07-14 13:44:26', '2025-07-14 13:44:26'),

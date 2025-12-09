@@ -1,3 +1,4 @@
+use souqly;
 INSERT INTO products (
   product_id, product_name, image_url, product_details,
   quantity, price, discount, special_price,
